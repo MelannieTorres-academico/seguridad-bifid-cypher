@@ -35,20 +35,26 @@ def findPositionInTableau (letter, tableau):
 
     return i,j
 
-def createArray(words, tableau):
+def createArray(words, tableau, flag):
     array1 = []
     array2 = []
+    array3 = []
     for word in words:
+        if(' ' in word):
+            flag = True
         word = word.replace(' ', '')
         for letter in word:
             i, j= findPositionInTableau(letter, tableau)
             if(i == -1):
-                return array1, array2
+                return array1, array2, array3, flag
             array1.append(i)
             array2.append(j)
-    return array1,array2
+            array3.append(i)
+            array3.append(j)
+    return array1, array2, array3, flag
 
-def translateToString(indices_list, tableau):
+def translateToStringEncrypt(array1, array2, tableau):
+    indices_list = array1 + array2
     num_of_pairs = int(len(indices_list)/2)
     string=''
     for it in range(num_of_pairs):
@@ -58,8 +64,22 @@ def translateToString(indices_list, tableau):
         string+=letter
     return string
 
+def translateToStringDecrypt(array3, tableau):
+    string=''
+    half_of_list = int(len(array3)/2)
+
+    for it in range(half_of_list):
+        i=array3[it]
+        j=array3[it+half_of_list]
+        letter=tableau[i][j]
+        string+=letter
+    return string
+
+
+
 def main():
     file_input = fileinput.input()
+    flag = False
 
     #recieve key
     key = file_input[0]
@@ -67,13 +87,17 @@ def main():
 
     tableau = createTableau(key)
 
-    words=file_input
+    words = file_input
 
-    array1, array2 = createArray(words, tableau)
-    indices_list = array1 + array2
-    
-    ct=translateToString(indices_list, tableau)
-    print(ct)
+
+    array1, array2, array3, flag = createArray(words, tableau, flag)
+
+    if (flag):
+        ct = translateToStringEncrypt(array1, array2, tableau)
+        print(ct)
+    else:
+        pt = translateToStringDecrypt(array3, tableau)
+        print(pt)
 
 
 
