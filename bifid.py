@@ -71,7 +71,7 @@ def main():
 
     array1, array2 = createArray(words, tableau)
     indices_list = array1 + array2
-
+    
     ct=translateToString(indices_list, tableau)
     print(ct)
 
