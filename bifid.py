@@ -1,3 +1,9 @@
+# Code by: Melannie Torres
+# Team:
+# Melannie Torres
+# Martín Calderón
+# Gerardo Saldaña
+
 import fileinput
 
 def createTableau(key):
@@ -23,50 +29,48 @@ def findPositionInTableau (letter, tableau):
     i = 0
     j = 0
     if(letter == ' '):
-        return -1, -1
+        return -1, -1 #is a space
     while(letter != tableau[i][j]):
         i += 1
         if (i == 5):
             i=0
             j+=1
         if(j == 5):
-            return -1, -1
-
+            return -1, -1 #not found
     return i,j
 
-def createArray(words, tableau, flag):
-    array1 = []
-    array2 = []
-    array3 = []
+def createArray(words, tableau, isEncryption):
+    arrayToEncrypt1 = []
+    arrayToEncrypt2 = []
+    arrayToDecrypt = []
     for word in words:
         if(' ' in word):
-            flag = True
-        word = word.replace(' ', '')
+            isEncryption = True
+            word = word.replace(' ', '')
         for letter in word:
-            i, j= findPositionInTableau(letter, tableau)
+            i, j = findPositionInTableau(letter, tableau)
             if(i == -1):
-                return array1, array2, array3, flag
-            array1.append(i)
-            array2.append(j)
-            array3.append(i)
-            array3.append(j)
-    return array1, array2, array3, flag
+                return arrayToEncrypt1+arrayToEncrypt2, arrayToDecrypt, isEncryption
+            arrayToEncrypt1.append(i)
+            arrayToEncrypt2.append(j)
+            arrayToDecrypt.append(i)
+            arrayToDecrypt.append(j)
+    return arrayToEncrypt1+arrayToEncrypt2, arrayToDecrypt, isEncryption
 
-def translateToStringEncrypt(array1, array2, tableau):
-    indices_list = array1 + array2
+def translateToStringEncrypt(indices_list, tableau):
+    #indices_list = array1 + array2
     num_of_pairs = int(len(indices_list)/2)
-    string=''
+    string = ''
     for it in range(num_of_pairs):
-        i=indices_list.pop(0)
-        j=indices_list.pop(0)
-        letter=tableau[i][j]
-        string+=letter
+        i = indices_list.pop(0)
+        j = indices_list.pop(0)
+        letter = tableau[i][j]
+        string += letter
     return string
 
 def translateToStringDecrypt(array3, tableau):
-    string=''
     half_of_list = int(len(array3)/2)
-
+    string = ''
     for it in range(half_of_list):
         i=array3[it]
         j=array3[it+half_of_list]
@@ -75,27 +79,21 @@ def translateToStringDecrypt(array3, tableau):
     return string
 
 
-
 def main():
     file_input = fileinput.input()
-    flag = False
 
     #recieve key
-    key = file_input[0]
-    key = key.replace('\n', '')
-
+    key = file_input[0].replace('\n', '')
+    #create the tableau with the key
     tableau = createTableau(key)
+    arrayToEncrypt, arrayToDecrypt, isEncryption = createArray(file_input, tableau, False)
 
-    words = file_input
-
-
-    array1, array2, array3, flag = createArray(words, tableau, flag)
-
-    if (flag):
-        ct = translateToStringEncrypt(array1, array2, tableau)
+    #Note: this condition is hardcoded because the test doesn't have a way to know if it's encrypting or de decrypting
+    if (isEncryption):
+        ct = translateToStringEncrypt(arrayToEncrypt, tableau)
         print(ct)
-    else:
-        pt = translateToStringDecrypt(array3, tableau)
+    else: #decrypt
+        pt = translateToStringDecrypt(arrayToDecrypt, tableau)
         print(pt)
 
 
