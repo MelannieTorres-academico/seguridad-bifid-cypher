@@ -1,4 +1,3 @@
-import numpy as np
 import fileinput
 
 def createTableau(key):
@@ -13,7 +12,7 @@ def createTableau(key):
 
     #create matrix containing the string_tableau
     counter = 0
-    tableau = np.chararray((5,5), unicode=True)
+    tableau = [[0 for x in range(5)] for y in range(5)] # https://stackoverflow.com/questions/6667201/how-to-define-a-two-dimensional-array-in-python
     for i in range(5):
         for j in range(5):
             tableau[i][j]=string_tableau[counter]
